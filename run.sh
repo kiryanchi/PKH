@@ -1,48 +1,36 @@
 #!/bin/bash
 
+# $1: on_container $2: port $3: off_container
+run() {
+  echo "#### Turn on $1 container"
+
+  echo "1. Deploy $1 container"
+  docker compose up -d $1 --build
+
+  echo "2. Wait until $1 turn on"
+  while [ 1 = 1 ]; do
+    sleep 3
+
+    echo "    Health check for $1 container"
+    STATUS=$(curl -s http://127.0.0.1:$2/health)
+    if [ $STATUS ]; then
+      echo "Successfully $1 turned on"
+      break;
+    fi
+  done;
+
+  echo "3. Apply $1 nginx config"
+  sudo cp ./nginx/nginx.$1.conf /etc/nginx/nginx.conf
+  sudo nginx -s reload
+
+  echo "#### Turn off if there is $3 container"
+  docker container stop $3
+}
+
 IS_GREEN=$(docker container ls | grep green)
 
-if [ $IS_GREEN ]; then # Current container: green or none
-
-  echo "#### Turn on blue container ####"
-
-  echo "1. Deploy spring as blue container"
-  docker compose up -d blue --build
-
-  echo "2. Wait until blue container turn on"
-  while [ 1 = 1 ]; do
-    sleep 2
-
-    echo "    Health Check for blue container"
-    STATUS=$(curl -s http://127.0.0.1:8081/health)
-    if [ $STATUS ]; then
-      echo "Successfully blue container turned on"
-      break;
-    fi
-  done;
-
-  echo "#### Turn off if there is green Container"
-  docker container stop green
-
-else # Current container: blue
-
-  echo "#### Turn on green container ####"
-
-  echo "1.Deploy spring as green container"
-  docker compose up -d green --build
-
-  echo "2. Wait until green container turn on"
-  while [ 1 = 1 ]; do
-    sleep 2
-
-    echo "    Health Check for green container"
-    STATUS=$(curl -s http://127.0.0.1:8080/health)
-    if [ $STATUS ]; then
-      echo "Successfully green container turned on"
-      break;
-    fi
-  done;
-
-  echo "#### Turn off if there is blue Container"
-  docker container stop blue
+if [ $IS_GREEN ]; then
+  run blue 8081 green
+else
+  run green 8080 blue
 fi

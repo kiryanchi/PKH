@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-runners
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -34,16 +34,18 @@ jobs:
       - name: Build with gradle
         run: ./gradlew build
 
-      - name: Copy and Paste jar file to EC2
+      - if: ${{ github.repository_owner == 'WhaleAjang' }}
+        name: Copy and Paste jar file to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh"
+          source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh, nginx"
           target: /home/${{ secrets.HOST }}/
 
-      - name: Deploy via run script
+      - if: ${{ github.repository_owner == 'WhaleAjang' }}
+        name: Deploy via run script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
