@@ -5,7 +5,7 @@ run() {
   echo "#### Turn on $1 container"
 
   echo "1. Deploy $1 container"
-  docker compose up -d $1 --build
+  sudo docker compose up -d $1 --build
 
   echo "2. Wait until $1 turn on"
   while [ 1 = 1 ]; do
@@ -24,10 +24,10 @@ run() {
   sudo nginx -s reload
 
   echo "#### Turn off if there is $3 container"
-  docker container stop $3
+  sudo docker container stop $3
 }
 
-IS_GREEN=$(docker container ls | grep green)
+IS_GREEN=$(sudo docker container ls | grep green)
 
 if [ $IS_GREEN ]; then
   run blue 8081 green
