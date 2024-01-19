@@ -20,7 +20,7 @@ run() {
   done;
 
   echo "3. Apply $1 nginx config"
-  sudo cp ./nginx/nginx.$1.conf /etc/nginx/nginx.conf
+  sudo cp ./nginx/nginx.$1.conf /etc/nginx/conf.d/app.conf
   sudo nginx -s reload
 
   echo "#### Turn off if there is $3 container"
