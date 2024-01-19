@@ -24,7 +24,10 @@ run() {
   sudo nginx -s reload
 
   echo "#### Turn off if there is $3 container"
-  sudo docker container stop $3
+  OTHER_CONTAINER=$(sudo docker container ls | grep $3)
+  if [ $OTHER_CONTAINER ]; then
+    sudo docker container stop $3
+  fi
 }
 
 IS_GREEN=$(sudo docker container ls | grep green)
