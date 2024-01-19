@@ -1,0 +1,16 @@
+spring:
+  h2:
+    console:
+      path: /h2
+
+--- # Local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+--- # Prod
+spring:
+  config:
+    activate:
+      on-profile: prod
