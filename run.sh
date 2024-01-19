@@ -25,14 +25,14 @@ run() {
 
   echo "#### Turn off if there is $3 container"
   OTHER_CONTAINER=$(sudo docker container ls | grep $3)
-  if [ $OTHER_CONTAINER ]; then
+  if [ "$OTHER_CONTAINER" ]; then
     sudo docker container stop $3
   fi
 }
 
 IS_GREEN=$(sudo docker container ls | grep green)
 
-if [ $IS_GREEN ]; then
+if [ "$IS_GREEN" ]; then
   run blue 8081 green
 else
   run green 8080 blue
