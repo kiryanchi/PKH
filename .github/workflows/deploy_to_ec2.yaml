@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh, nginx"
-          target: /home/${{ secrets.HOST }}/
+          target: /home/${{ secrets.USERNAME }}/
 
       - if: ${{ github.repository_owner == 'WhaleAjang' }}
         name: Deploy via run script
@@ -51,4 +51,4 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          script: /home/${{ secrets.HOST }}/run.sh
+          script: /home/${{ secrets.USERNAME }}/run.sh
