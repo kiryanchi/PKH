@@ -41,7 +41,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh"
+          source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh, nginx"
           target: /home/${{ secrets.HOST }}/
 
       - if: ${{ github.repository_owner == 'WhaleAjang' }}
