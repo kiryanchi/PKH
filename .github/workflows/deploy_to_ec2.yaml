@@ -34,8 +34,28 @@ jobs:
       - name: Build with gradle
         run: ./gradlew build
 
-      - if: ${{ github.repository_owner == 'WhaleAjang' }}
-        name: Copy and Paste jar file to EC2
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact
+          path: build/libs/app.jar
+          retention-days: 7
+          overwrite: true
+
+  deploy:
+    if: ${{ github.repository_owner == 'WhaleAjang' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build_artifact
+          path: build/libs/app.jar
+
+      - name: Copy and Paste jar file to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -44,8 +64,7 @@ jobs:
           source: "build/libs/app.jar, Dockerfile, docker-compose.yaml, run.sh, nginx"
           target: /home/${{ secrets.USERNAME }}/
 
-      - if: ${{ github.repository_owner == 'WhaleAjang' }}
-        name: Deploy via run script
+      - name: Deploy via run script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
